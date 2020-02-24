@@ -1,2 +1,0 @@
-# HallwayGuardProject
- First person plarformer
