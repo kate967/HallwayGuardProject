@@ -46,7 +46,7 @@ public class InGameUI : MonoBehaviour
         {
             actionText.text = "Press E to Interact";
             exitText.text = "Press E to Exit";
-            dashText.text = "Press Q to Dash";
+            dashText.text = "Press F to Dash";
         }
     }
 

@@ -18,6 +18,9 @@ public class UIManager : MonoBehaviour
     /***References***/
     public GameObject gC;
     public GameObject player;
+    public GameObject enemy;
+    public GameObject enemyPlayer;
+    public GameObject audioManager;
     public GameObject myEventSystem;
 
     /***Buttons***/
@@ -31,6 +34,9 @@ public class UIManager : MonoBehaviour
     /***Private Variables**/
     private GameController gameController;
     private PlayerController playerController;
+    private EnemyController enemyController;
+    private EnemyControlledByPlayer enemyControlledByPlayer;
+    private AuidoManager auidoManager; //i realize i spelled audio wrong lol
     private EventSystem eventSystem;
 
     void Awake()
@@ -42,6 +48,9 @@ public class UIManager : MonoBehaviour
     {
         gameController = gC.GetComponent<GameController>();
         playerController = player.GetComponent<PlayerController>();
+        enemyController = enemy.GetComponent<EnemyController>();
+        enemyControlledByPlayer = enemyPlayer.GetComponent<EnemyControlledByPlayer>();
+        auidoManager = audioManager.GetComponent<AuidoManager>();
 
         if (InputManager.instance.controller == false)
         {
@@ -87,6 +96,11 @@ public class UIManager : MonoBehaviour
         if (pauseMenu.activeSelf)
         {
             PauseMenuControl();
+            if (enemyPlayer.gameObject.activeSelf)
+            {
+                enemyControlledByPlayer.source.Stop();
+                enemyControlledByPlayer.source2.Stop();
+            }
         }
         if (controlsMenu.activeSelf)
         {
@@ -170,6 +184,7 @@ public class UIManager : MonoBehaviour
     void PauseGame()
     {
         pauseMenu.SetActive(true);
+        enemyController.source.Stop();
 
         eventSystem.SetSelectedGameObject(resumeButton);
 
@@ -220,9 +235,19 @@ public class UIManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-        Time.timeScale = 0;
+
+        enemyController.source.Stop();
+        enemyControlledByPlayer.source.Stop();
+        enemyControlledByPlayer.source2.Stop();
+        playerController.source.Stop();
+        playerController.source2.Stop();
+
+        auidoManager.source.clip = auidoManager.won;
+        auidoManager.source.volume = 0.2f;
+        auidoManager.source.Play();
 
         gameController.wonGame = false;
+        Time.timeScale = 0;
     }
 
     void LostGameUIControl()
@@ -239,6 +264,16 @@ public class UIManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+
+        enemyController.source.Stop();
+        enemyControlledByPlayer.source.Stop();
+        enemyControlledByPlayer.source2.Stop();
+        playerController.source.Stop();
+        playerController.source2.Stop();
+
+        auidoManager.source.clip = auidoManager.lost;
+        auidoManager.source.volume = 0.2f;
+        auidoManager.source.Play();
 
         gameController.lostGame = false;
         Time.timeScale = 0;

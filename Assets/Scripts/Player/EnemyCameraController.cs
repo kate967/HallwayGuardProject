@@ -5,8 +5,6 @@ using UnityEngine;
 public class EnemyCameraController : MonoBehaviour
 {
     public float rotationSpeed;
-    public float adjustedNearClip;
-    public float normalNearClip;
     public Transform enemyPlayer;
 
     private float mX;
@@ -15,6 +13,25 @@ public class EnemyCameraController : MonoBehaviour
     void LateUpdate()
     {
         CameraController();
+    }
+
+    void Update()
+    {
+        if(Time.timeScale >= 1)
+        {
+            if (InputManager.instance.controller)
+            {
+                rotationSpeed = 7f;
+            }
+            if (!InputManager.instance.controller)
+            {
+                rotationSpeed = 20f;
+            }
+        }
+        else
+        {
+            rotationSpeed = 0;
+        }
     }
 
     void CameraController()

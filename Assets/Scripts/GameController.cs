@@ -17,12 +17,17 @@ public class GameController : MonoBehaviour
     public bool lostGame = false;
     public bool wonGame = false;
 
+    private EnemyControlledByPlayer enemyControlledByPlayer;
+
     void Start()
     {
+        enemyControlledByPlayer = playerAsEnemy.GetComponent<EnemyControlledByPlayer>();
+
         //on level start
         player.SetActive(false);
         playerAsEnemy.SetActive(false);
         squirrelModel.SetActive(false);
+        realEnemy.SetActive(false);
 
         hallwayPlane.SetActive(false);
     }
@@ -51,6 +56,8 @@ public class GameController : MonoBehaviour
 
         playerAsEnemy.SetActive(false);
         squirrelModel.SetActive(false);
+        enemyControlledByPlayer.source.Stop();
+        enemyControlledByPlayer.source2.Stop();
     }
 
     public void DoorWasHit(GameObject door)

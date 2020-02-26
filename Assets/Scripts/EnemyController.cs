@@ -24,7 +24,16 @@ public class EnemyController : MonoBehaviour
     private PlayerController playerController;
     private GameController gameController;
     private Animation anim;
-    
+    public AudioSource source;
+    public AudioClip walk;
+    public AudioClip dash;
+
+
+    void Awake()
+    {
+        source = this.GetComponent<AudioSource>();
+        source.Play();
+    }
     void Start ()
     {
         playerController = player.GetComponent<PlayerController>();
@@ -60,6 +69,10 @@ public class EnemyController : MonoBehaviour
             anim["Take 001"].speed = 5.0f;
             agent.speed = 4.5f;
             agent.acceleration = 120;
+        }
+        if(gameController.goToHallway)
+        {
+            anim["Take 001"].speed = 5.0f;
         }
 
         PathControl();
@@ -122,11 +135,16 @@ public class EnemyController : MonoBehaviour
             }
             if (timer > 0 && timer < 1)
             {
+                source.Stop();
+
                 agent.isStopped = true;
                 anim["Take 001"].speed = 0f;
+
             }
             if (timer > 0 && timer < 0.25f)
             {
+                source.PlayOneShot(dash);
+
                 agent.isStopped = false;
                 anim["Take 001"].speed = 5.0f;
                 agent.speed = 35;
@@ -134,6 +152,7 @@ public class EnemyController : MonoBehaviour
             }
             if (timer <= 0)
             {
+                source.Play();
                 timer = 5f;
             }
         }

@@ -13,6 +13,9 @@ public class EnemyControlledByPlayer : MonoBehaviour
     public GameObject door;
     public GameObject inGameUI;
     public GameObject gC;
+    public AudioClip walk;
+    public AudioClip dash;
+    public AudioClip hitDoorClip;
 
     private Rigidbody rb;
     private Animation anim;
@@ -21,6 +24,9 @@ public class EnemyControlledByPlayer : MonoBehaviour
     private InGameUI inGameUIContoller;
     private float timer;
     private float distance;
+    private int doOnce = 0;
+    public AudioSource source;
+    public AudioSource source2;
 
     /*NOTE
      *When the player is playing as the enemy
@@ -64,10 +70,17 @@ public class EnemyControlledByPlayer : MonoBehaviour
         if(rb.velocity.magnitude > 0)
         {
             anim["Take 001"].speed = 7.0f;
+            if(!source.isPlaying)
+            {
+                source.clip = walk;
+                source.loop = true;
+                source.Play();
+            }
         }
         else if(rb.velocity.magnitude <= 0)
         {
             anim["Take 001"].speed = 0f;
+            source.Stop();
         }
     }
 
@@ -91,6 +104,9 @@ public class EnemyControlledByPlayer : MonoBehaviour
         {
             Vector3 dashMovement = transform.forward;
             rb.AddForce(dashMovement * dashSpeed);
+
+            source2.PlayOneShot(dash);
+
             timer = 2f;
         }
     }
@@ -116,6 +132,12 @@ public class EnemyControlledByPlayer : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Door"))
         {
+            if(doOnce == 0)
+            {
+                source2.clip = hitDoorClip;
+                source2.PlayOneShot(hitDoorClip);
+                doOnce++;
+            }
             doorRb.AddForce(door.transform.forward * thrust, ForceMode.Force);
         }
     }

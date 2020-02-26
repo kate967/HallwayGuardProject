@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundMask;
     public LayerMask enemyMask;
     public LayerMask remoteMask;
+    public AudioClip hitClip;
 
     /***Controller Vibration***/
     public int motorIndex;
@@ -36,6 +37,8 @@ public class PlayerController : MonoBehaviour
     private GameController gameController;
     private InGameUI inGameUIController;
     private Vector3 velocity;
+    public AudioSource source;
+    public AudioSource source2;
     private int currHealth;
     private float jumpTimeCounter;
     private float timer;
@@ -48,6 +51,7 @@ public class PlayerController : MonoBehaviour
     {
         gameController = gC.GetComponent<GameController>();
         inGameUIController = inGameUI.GetComponent<InGameUI>();
+        source = this.GetComponent<AudioSource>();
 
         currHealth = maxHealth;
     }
@@ -66,6 +70,8 @@ public class PlayerController : MonoBehaviour
             gameController.lostGame = true;
             currHealth = 9999;
         }
+        
+
     }
 
     void FixedUpdate()
@@ -85,6 +91,21 @@ public class PlayerController : MonoBehaviour
         Vector3 movement = (transform.right * x + transform.forward * z).normalized;
         controller.Move(movement * speed * Time.deltaTime);
 
+        if (movement.magnitude > Vector3.zero.magnitude && !source.isPlaying && !isJumping)
+        {
+            if(InputManager.instance.player.GetButtonDown("Jump") || isJumping || InputManager.instance.player.GetButtonDown("Jump") || InputManager.instance.player.GetButton("Jump") || !isGrounded)
+            {
+                source.Stop();
+            }
+            else
+            {
+                source.Play();
+            }
+        }
+        else if (movement.magnitude <= Vector3.zero.magnitude || isJumping || InputManager.instance.player.GetButtonDown("Jump") || InputManager.instance.player.GetButton("Jump") || !isGrounded)
+        {
+            source.Stop();
+        }
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
@@ -128,6 +149,8 @@ public class PlayerController : MonoBehaviour
 
     void UpdateHealth()
     {
+        source2.PlayOneShot(hitClip);
+
         currHealth--;
         inGameUIController.UpdateVisualHealth(currHealth);
     }

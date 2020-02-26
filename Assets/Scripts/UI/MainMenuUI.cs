@@ -9,12 +9,14 @@ public class MainMenuUI : MonoBehaviour
     public GameObject inGameUI;
     public GameObject backgroundMenu;
     public GameObject player;
+    public GameObject enemy;
 
     public void StartGame()
     {
         backgroundMenu.SetActive(false);
         inGameUI.SetActive(true);
         player.SetActive(true);
+        enemy.SetActive(true);
         
         InputManager.instance.doOneTime = 0;
         Cursor.lockState = CursorLockMode.Locked;
